@@ -39,4 +39,13 @@ public class Maze {
     public void setExplored(boolean[][] explored) {
         this.explored = explored;
     }
+
+    public Maze(final MazeLocation[][] location) {
+        if (location == null)
+            throw new IllegalArgumentException("Cannot have null location in Maze");
+        this.location = location;
+        this.height = location.length;
+        this.width = location[0].length;
+        this.explored = new boolean[height][width];
+    }
 }

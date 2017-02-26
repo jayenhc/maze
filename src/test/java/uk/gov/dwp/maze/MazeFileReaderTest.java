@@ -2,7 +2,6 @@ package uk.gov.dwp.maze;
 
 import org.junit.Test;
 
-import static org.hamcrest.Matchers.containsString;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 
@@ -25,7 +24,7 @@ public class MazeFileReaderTest {
 
     @Test
     public void testShouldReturnFile() {
-        this.mazeFileReader = new MazeFileReader("/Maze1.txt");
+        this.mazeFileReader = new MazeFileReader("/Maze.txt");
         assertNotNull(this.mazeFileReader.getRows());
     }
 

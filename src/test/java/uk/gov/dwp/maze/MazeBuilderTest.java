@@ -1,10 +1,8 @@
 package uk.gov.dwp.maze;
 
-import static org.junit.Assert.*;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.io.File;
 /**
  * Created by jchondig on 26/02/2017.
  */
@@ -22,5 +20,30 @@ public class MazeBuilderTest {
         mazeBuilder.build("abc");
     }
 
+    @Test
+    public void testMazeWithMultipleStarts() {
+        try {
+            mazeBuilder.build("/MultipleStarts.txt");
+        } catch (IllegalArgumentException iae) {
+            Assert.assertTrue(iae.getMessage().contains("Invalid input - should have only one Start point 'S' and only one exit 'F'"));
+        }
+    }
+
+    @Test
+    public void testMazeWithMultipleFinish() {
+        try {
+            mazeBuilder.build("/MultipleExits.txt");
+        } catch (IllegalArgumentException iae) {
+            Assert.assertTrue(iae.getMessage().contains("Invalid input - should have only one Start point 'S' and only one exit 'F'"));
+        }
+    }
+
+    @Test
+    public void testMazeBuild() {
+        Maze maze = mazeBuilder.build("/Maze.txt");
+        Assert.assertNotNull(maze);
+        Assert.assertNotNull(maze.getHeight());
+        Assert.assertNotNull(maze.getWidth());
+    }
 
 }

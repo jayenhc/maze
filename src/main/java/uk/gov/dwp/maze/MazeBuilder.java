@@ -1,12 +1,5 @@
 package uk.gov.dwp.maze;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Created by jchondig on 26/02/2017.
@@ -26,14 +19,28 @@ public class MazeBuilder {
         //create MazeLocation array
         MazeLocation[][] mazeLocations = new MazeLocation[height][width];
 
-        mazeRows.forEach( r -> {
-            if(r.length() != width){
-                throw new IllegalArgumentException(" Length of row " + r + " is wrong.");
+        for (int row = 0; row < height; row++) {
+            if (mazeRows.get(row).length() != width) {
+                throw new IllegalArgumentException(" Length of row " + (row + 1) + " is wrong ");
             }
-        });
 
+            for (int col = 0; col < width; col++) {
+                MazeLocation location = new MazeLocation(row, col, mazeRows.get(row).charAt(col));
+                mazeLocations[row][col] = location;
+                if (location.isStart())
+                    startCount ++;
+                if (location.isExit())
+                    exitCount ++;
+            }
+        }
 
+        if (startCount != 1 || exitCount != 1)
+            throw new IllegalArgumentException("Invalid input - should have only one Start point 'S' and only one exit 'F'");
 
-        return null;
+        return new Maze(mazeLocations);
+    }
+
+    public static void main(String arg[]){
+        MazeBuilder.build("/Maze.txt");
     }
 }

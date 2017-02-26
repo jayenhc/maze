@@ -9,6 +9,19 @@ public class MazeLocation {
     //char stored at location
     private MazeStatus status;
 
+
+    public MazeLocation(int row, int column, MazeStatus status) {
+        this.row = row;
+        this.column = column;
+        this.status = status;
+    }
+
+    public MazeLocation(int row, int column, char sign) {
+        this.row = row;
+        this.column = column;
+        this.status = MazeStatus.getMazeStatus(sign);
+    }
+
     public int getRow() {
         return row;
     }
@@ -31,5 +44,17 @@ public class MazeLocation {
 
     public void setStatus(MazeStatus status) {
         this.status = status;
+    }
+
+    public boolean isStart() {
+        return status == MazeStatus.START;
+    }
+
+    public boolean isExit() {
+        return status == MazeStatus.EXIT;
+    }
+
+    public boolean isWalled() {
+        return status == MazeStatus.WALL;
     }
 }
