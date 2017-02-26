@@ -12,7 +12,7 @@ import static org.junit.Assert.assertThat;
 public class MazeStatusTest {
 
     @Test
-    public void testGetSquareStateBySign() {
+    public void testGetMazeStatusBySign() {
         assertEquals(MazeStatus.START, MazeStatus.getMazeStatus('S'));
         assertEquals(MazeStatus.EXIT , MazeStatus.getMazeStatus('F'));
         assertEquals(MazeStatus.WALL , MazeStatus.getMazeStatus('X'));

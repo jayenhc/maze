@@ -46,4 +46,8 @@ public class MazeBuilderTest {
         Assert.assertNotNull(maze.getWidth());
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void testInvalidContentInput() {
+        Maze maze = mazeBuilder.build("/InvalidMaze.txt");
+    }
 }

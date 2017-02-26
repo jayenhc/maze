@@ -54,7 +54,14 @@ public class MazeLocation {
         return status == MazeStatus.EXIT;
     }
 
-    public boolean isWalled() {
+    public boolean isWall() {
         return status == MazeStatus.WALL;
     }
+
+    public boolean isNextMovePossible() {
+        return status == MazeStatus.EMPTY_SPACE ||
+                status == MazeStatus.START ||
+                status == MazeStatus.EXIT;
+    }
+
 }

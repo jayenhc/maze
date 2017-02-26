@@ -40,7 +40,5 @@ public class MazeBuilder {
         return new Maze(mazeLocations);
     }
 
-    public static void main(String arg[]){
-        MazeBuilder.build("/Maze.txt");
-    }
+
 }
