@@ -17,4 +17,7 @@ public class MazeFileReader {
         }
     }
 
+    public File getFile() {
+        return file;
+    }
 }
