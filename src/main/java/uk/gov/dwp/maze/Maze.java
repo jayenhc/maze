@@ -2,27 +2,11 @@ package uk.gov.dwp.maze;
 
 public class Maze {
 
-    private int row;
-    private int coulumn;
     private int height;
     private int width;
-    private MazeStatus status;
-
-    public int getRow() {
-        return row;
-    }
-
-    public void setRow(int row) {
-        this.row = row;
-    }
-
-    public int getCoulumn() {
-        return coulumn;
-    }
-
-    public void setCoulumn(int coulumn) {
-        this.coulumn = coulumn;
-    }
+    //location of each char in maze
+    private MazeLocation [][] location;
+    private boolean[][] explored;
 
     public int getHeight() {
         return height;
@@ -40,11 +24,19 @@ public class Maze {
         this.width = width;
     }
 
-    public MazeStatus getStatus() {
-        return status;
+    public MazeLocation[][] getLocation() {
+        return location;
     }
 
-    public void setStatus(MazeStatus status) {
-        this.status = status;
+    public void setLocation(MazeLocation[][] location) {
+        this.location = location;
+    }
+
+    public boolean[][] getExplored() {
+        return explored;
+    }
+
+    public void setExplored(boolean[][] explored) {
+        this.explored = explored;
     }
 }
