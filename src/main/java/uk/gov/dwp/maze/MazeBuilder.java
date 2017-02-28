@@ -11,13 +11,13 @@ public class MazeBuilder {
         MazeFileReader mazeFileReader = new MazeFileReader(fileName);
         List<String> mazeRows = mazeFileReader.getRows();
 
-        int height = mazeRows.size();
-        int width =  mazeRows.get(0).length();
+        final int height = mazeRows.size();
+        final int width =  mazeRows.get(0).length();
         int startCount = 0;
         int exitCount = 0;
 
         //create MazeLocation array
-        MazeLocation[][] mazeLocations = new MazeLocation[height][width];
+        final MazeLocation[][] mazeLocations = new MazeLocation[height][width];
 
         for (int row = 0; row < height; row++) {
             if (mazeRows.get(row).length() != width) {

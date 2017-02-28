@@ -1,45 +1,39 @@
 package uk.gov.dwp.maze;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 public class Maze {
 
+    private boolean done;
     private int height;
     private int width;
     //location of each char in maze
-    private MazeLocation [][] location;
+    private MazeLocation[][] location;
+    // store explored locations
     private boolean[][] explored;
+    // store explored location path in stack
+    private ExploredPath exploredPath;
 
     public int getHeight() {
         return height;
-    }
-
-    public void setHeight(int height) {
-        this.height = height;
     }
 
     public int getWidth() {
         return width;
     }
 
-    public void setWidth(int width) {
-        this.width = width;
+    public ExploredPath getExploredPath() {
+        return exploredPath;
     }
 
     public MazeLocation[][] getLocation() {
         return location;
     }
 
-    public void setLocation(MazeLocation[][] location) {
-        this.location = location;
-    }
-
     public boolean[][] getExplored() {
         return explored;
-    }
-
-    public void setExplored(boolean[][] explored) {
-        this.explored = explored;
     }
 
     public Maze(final MazeLocation[][] location) {
@@ -48,23 +42,24 @@ public class Maze {
         this.location = location;
         this.height = location.length;
         this.width = location[0].length;
+        this.exploredPath = new ExploredPath();
         this.explored = new boolean[height][width];
     }
 
-    public MazeLocation getMazeLocation(int x, int y){
+    public MazeLocation getMazeLocation(final int x, final int y) {
         if (!validateCoordinates(x, y)) {
             return null;
         }
         return location[x][y];
     }
 
-    private boolean validateCoordinates(int row, int col) {
+    private boolean validateCoordinates(final int row,final int col) {
         return !(row < 0 || row >= getHeight() || col < 0 || col >= getWidth());
     }
 
     private List<MazeLocation> findMazeLocation(final MazeStatus status) {
         List<MazeLocation> results = new ArrayList<MazeLocation>();
-        for (int i = 0 ; i < getHeight(); i ++) {
+        for (int i = 0; i < getHeight(); i++) {
             for (int j = 0; j < getWidth(); j++) {
                 MazeLocation coordinate = getMazeLocation(i, j);
                 if (coordinate.getStatus() == status)
@@ -75,49 +70,135 @@ public class Maze {
     }
 
     public MazeLocation getStartLocation() {
-        List<MazeLocation> starts = findMazeLocation(MazeStatus.START);
+        final List<MazeLocation> starts = findMazeLocation(MazeStatus.START);
         return starts.isEmpty() ? null : starts.get(0);
     }
 
-    public void markExplored(int x, int y, boolean visited) {
+    public void markExplored(final int x,final int y,final boolean visited) {
         explored[x][y] = visited;
+        exploredPath.addPath(location[x][y]);
     }
 
     public boolean isExplored(final int x, final int y) {
         return explored[x][y];
     }
 
-    public Set<MazeLocation> getNextMove(Maze maze, final int currentRow, final int currentCol) {
-        Set<MazeLocation> emptyLocation = new HashSet<MazeLocation>();
+    public Optional<MazeLocation> getNextMove(final Maze maze, final int currentRow, final int currentCol) {
+        Optional<MazeLocation> emptyLocation;
 
-        for (int i = 0; i <= 3; i ++) {
-            if (i == 0 && maze.getMazeLocation(currentRow, currentCol - 1).isNextMovePossible() &&
-                    !maze.isExplored(currentRow, currentCol - 1)) {
-                emptyLocation.add(maze.getMazeLocation(currentRow, currentCol - 1));
-            } else if (i == 1 && maze.getMazeLocation(currentRow - 1, currentCol).isNextMovePossible() &&
-                    !maze.isExplored(currentRow - 1, currentCol)) {
-                emptyLocation.add(maze.getMazeLocation(currentRow - 1, currentCol));
-            } else if (i == 2 && maze.getMazeLocation(currentRow + 1, currentCol).isNextMovePossible() &&
-                    !maze.isExplored(currentRow + 1, currentCol)) {
-                emptyLocation.add(maze.getMazeLocation(currentRow + 1, currentCol));
-            } else if (i == 3 && maze.getMazeLocation(currentRow, currentCol + 1).isNextMovePossible() &&
-                    !maze.isExplored(currentRow, currentCol + 1)) {
-                emptyLocation.add(maze.getMazeLocation(currentRow, currentCol + 1));
-            }
+        //First start from North
+        emptyLocation = findEmptyLoction(maze, currentRow-1,currentCol);
+
+        //if not found then check South
+        if(!emptyLocation.isPresent()) {
+            emptyLocation = findEmptyLoction(maze, currentRow + 1, currentCol);
+        }
+        // Check West
+        if(!emptyLocation.isPresent()) {
+            emptyLocation = findEmptyLoction(maze, currentRow, currentCol - 1);
+        }
+        //Check East
+        if(!emptyLocation.isPresent()) {
+            emptyLocation = findEmptyLoction(maze, currentRow, currentCol + 1);
         }
         return emptyLocation;
     }
 
+    private Optional<MazeLocation> findEmptyLoction(final Maze maze,final int row,final int col) {
+        Optional<MazeLocation> emptyLocation = Optional.empty();
+         if(maze.getMazeLocation(row, col).isNextMovePossible() && !maze.isExplored(row, col)){
+             emptyLocation = Optional.of(maze.getMazeLocation(row, col));
+         }
+         return emptyLocation;
+    }
 
-    public MazeLocation turn(final int row, final int col){
-        Set<MazeLocation> mazeLocations = getNextMove(this, row, col);
-        // if there are more than one open mazeLocations in front randomly pick one up.
-        int size = mazeLocations.size();
-        if (size > 0) {
-            Random generator = new Random();
-            int index = generator.nextInt(size);
-            return mazeLocations.toArray(new MazeLocation[size])[index];
+
+    /**
+     * turn recursively called until find the exit
+     *
+     * @param row
+     * @param col
+     * @return
+     */
+    public boolean turn(final int row, final int col) {
+        // check current location
+        MazeLocation currentLoction = getMazeLocation(row, col);
+        if (currentLoction.isExit()) {
+            // found the exit 'F',
+            //mark explored
+            this.markExplored(row, col, true);
+            done = true;
+            return true;
+        } else {
+            //mark explored
+            this.markExplored(row, col, true);
+            Optional<MazeLocation> nextLoction = getNextMove(this, row, col);
+            if (nextLoction.isPresent()) {
+                if (turn(nextLoction.get().getRow(), nextLoction.get().getColumn())) {
+                    System.out.println(this.toString());
+                    printExplorersPath();
+                    return !done;
+                }
+            } else {
+                // get previous explored square
+                MazeLocation previousExplored = getPreviousExplored();
+                if (previousExplored != null && turn(previousExplored.getRow(), previousExplored.getColumn())) {
+                    return !done;
+                }
+            }
         }
-        return null;
+        return false;
+    }
+    public MazeLocation getPreviousExplored() {
+        return this.getExploredPath().getPreviousExploredLoction();
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder result = new StringBuilder(getWidth() * getHeight());
+        for (int row = 0; row < getHeight(); row++) {
+            for (int col = 0; col < getWidth(); col++) {
+                if (location[row][col].isWall()) {
+                    result.append('X');
+                } else if (location[row][col].isStart()) {
+                    result.append('S');
+                } else if (location[row][col].isExit()) {
+                    result.append('F');
+                } else if (explored[row][col]) {
+                    result.append('-');
+                } else {
+                    result.append(' ');
+                }
+            }
+            result.append('\n');
+        }
+        return result.toString();
+    }
+
+    /**
+     * print the accumulated paths lead to the 'F' point.
+     */
+    public String printExplorersPath() {
+        StringBuilder result = new StringBuilder(this.getWidth() * this.getHeight());
+        final MazeLocation[][] mazeLocation = this.getLocation();
+        for (int row = 0; row < this.getHeight(); row++) {
+            for (int col = 0; col < this.getWidth(); col++) {
+
+                if (mazeLocation[row][col].isWall()) {
+                    result.append(' ');
+                } else if (mazeLocation[row][col].isStart()) {
+                    result.append('S');
+                } else if (mazeLocation[row][col].isExit()) {
+                    result.append('F');
+                } else if (this.getExploredPath().isOnPath(this.getMazeLocation(row, col))) {
+                    result.append('-');
+                } else {
+                    result.append(' ');
+                }
+            }
+            result.append('\n');
+        }
+        System.out.println(result.toString());
+        return result.toString();
     }
 }

@@ -10,13 +10,13 @@ public class MazeLocation {
     private MazeStatus status;
 
 
-    public MazeLocation(int row, int column, MazeStatus status) {
+    public MazeLocation(final int row,final int column,final MazeStatus status) {
         this.row = row;
         this.column = column;
         this.status = status;
     }
 
-    public MazeLocation(int row, int column, char sign) {
+    public MazeLocation(final int row,final int column,final char sign) {
         this.row = row;
         this.column = column;
         this.status = MazeStatus.getMazeStatus(sign);
@@ -26,24 +26,12 @@ public class MazeLocation {
         return row;
     }
 
-    public void setRow(int row) {
-        this.row = row;
-    }
-
     public int getColumn() {
         return column;
     }
 
-    public void setColumn(int column) {
-        this.column = column;
-    }
-
     public MazeStatus getStatus() {
         return status;
-    }
-
-    public void setStatus(MazeStatus status) {
-        this.status = status;
     }
 
     public boolean isStart() {

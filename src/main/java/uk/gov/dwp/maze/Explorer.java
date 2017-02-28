@@ -9,14 +9,15 @@ public class Explorer {
     }
 
     public static void main(String arg[]){
-        Explorer explorer = new Explorer(MazeBuilder.build("/Maze.txt"));
+        final Explorer explorer = new Explorer(MazeBuilder.build("/Maze.txt"));
         explorer.exploreMaze();
     }
 
     public void exploreMaze() {
-        MazeLocation start = maze.getStartLocation();
-        MazeLocation location= maze.turn(start.getRow(),start.getColumn());
-        System.out.println(location.getRow() + " : " + location.getColumn());
+        final MazeLocation start = maze.getStartLocation();
+        if( maze.turn(start.getRow(),start.getColumn())) {
+            System.out.println(maze);
+        }
 
     }
 }

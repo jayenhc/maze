@@ -1,10 +1,12 @@
 package uk.gov.dwp.maze;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * Created by jchondig on 25/02/2017.
@@ -13,7 +15,7 @@ public class MazeFileReader {
 
     private List<String>  rows;
 
-    public MazeFileReader(String filePath) {
+    public MazeFileReader(final String filePath) {
         if (filePath == null) {
             throw new IllegalArgumentException("File path cannot be null.");
         }
@@ -37,9 +39,4 @@ public class MazeFileReader {
         }
         return rows;
     }
-
-
-
-
-
 }
