@@ -8,6 +8,7 @@ public class MazeLocation {
     private int column;
     //char stored at location
     private MazeStatus status;
+    private ExplorerDirection direction;
 
 
     public MazeLocation(final int row,final int column,final MazeStatus status) {
